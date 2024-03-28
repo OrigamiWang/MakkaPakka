@@ -1,0 +1,35 @@
+<!--
+	SPDX-FileCopyrightText: 2023 The Pion community <https://pion.ly>
+	SPDX-License-Identifier: MIT
+-->
+<div id="signalingContainer" style="display: none">
+    Browser base64 Session Description<br />
+    <textarea id="localSessionDescription" readonly="true"></textarea> <br />
+    <br />
+    <br />
+  
+    Golang base64 Session Description<br />
+    <textarea id="remoteSessionDescription"></textarea> <br/>
+  
+  
+    <form>
+      <input type="text" id="uid" placeholder="User ID"/>
+      <input type="text" id="roomId" placeholder="Room ID"/>
+      <input type="text" id="role" placeholder="Role"/>
+    </form>
+    <button onclick="window.startSession()"> Start Session </button><br />
+  </div>
+  
+  <br />
+  
+  Audio<br />
+  <audio id="audio1" autoplay muted></audio>
+  
+  <button class="createSessionButton" onclick="window.createSession(true)"> Publish a Broadcast </button>
+  <button class="createSessionButton" onclick="window.createSession(false)"> Join a Broadcast </button><br />
+  
+  <br />
+  
+  Logs<br />
+  <div id="logs"></div>
+  
