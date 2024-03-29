@@ -33,7 +33,8 @@ window.startSession = () => {
 
     console.log("uid: " + uid + ", roomId: " + roomId + ", role: " + role)
     console.log("isPublisher: " + isPublisher);
-    var ws = new WebSocket("ws://9.134.75.180:8081/tk");
+    var ws = new WebSocket("ws://127.0.0.1:8081/tk");
+    // var ws = new WebSocket("ws://192.168.1.126:8081/tk");
     console.log("ws state: " + ws.readyState);
     ws.onclose = function (evt) {
         console.log("ws close");
@@ -68,7 +69,8 @@ window.startSession = () => {
     const pc = new RTCPeerConnection({
         iceServers: [
             {
-                urls: 'stun:stun.l.google.com:19302'
+                urls: 'stun:stun.xten.com:3478'
+                // urls: 'stun:stun.l.google.com:19302'
             }
         ]
     })
@@ -101,10 +103,33 @@ window.startSession = () => {
         }
 
         if (isPublisher) {
-            navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(stream => {
-                    stream.getTracks().forEach(track => pc.addTrack(track, stream))
-                    document.getElementById('audio1').srcObject = stream
+                    stream.getTracks().forEach(track => {
+                        pc.addTrack(track, stream)
+                        console.log("track kind: " + track.kind);
+                        if (track.kind == 'video') {
+                            const videoElement = document.getElementById('video1');
+                            videoElement.srcObject = stream;
+                            videoElement.autoplay = true;
+                            videoElement.controls = true;
+                            // videoElement.muted = false
+                        } else if (track.kind == 'audio') {
+                            const audioElement = document.getElementById('audio1')
+                            audioElement.srcObject = stream;
+                            audioElement.autoplay = true;
+                            audioElement.controls = true;
+                            audioElement.muted = true
+                        }
+                    })
+                    // const videoElement = document.getElementById('video1');
+                    // videoElement.srcObject = stream;
+                    // videoElement.autoplay = true;
+                    // videoElement.controls = true;
+                    // videoElement.muted = true
+
+                    // here may badly create offer twice
+                    console.log("create offer.......");
                     pc.createOffer()
                         .then(sdp => {
                             console.log("get local SDP:");
@@ -134,6 +159,7 @@ window.startSession = () => {
                 }).catch(log)
         } else {
             pc.addTransceiver('audio')
+            pc.addTransceiver('video')
             // create offer
             pc.createOffer()
                 .then(sdp => {
@@ -163,10 +189,27 @@ window.startSession = () => {
 
             // get track
             pc.ontrack = function (event) {
-                const el = document.getElementById('audio1')
-                el.srcObject = event.streams[0]
-                el.autoplay = true
-                el.controls = true
+                event.streams.forEach(stream => {
+                    stream.getTracks().forEach(track => {
+                        console.log("track kind: " + track.kind);
+                        if (track.kind == 'video') {
+                            const videoElement = document.getElementById('video1');
+                            videoElement.srcObject = stream;
+                            videoElement.autoplay = true;
+                            videoElement.controls = true;
+                            // videoElement.muted = false
+                        } else if (track.kind == 'audio') {
+                            const audioElement = document.getElementById('audio1')
+                            audioElement.srcObject = stream;
+                            audioElement.autoplay = true;
+                            audioElement.controls = true;
+                            audioElement.muted = false
+                        }
+                    })
+                    console.log("stream id: " + stream.id);
+                    // 设置视频元素的srcObject来播放视频和音频
+                    
+                })
             }
         }
     }

@@ -33,7 +33,8 @@ func main() { // nolint:gocognit
 	peerConnectionConfig := webrtc.Configuration{
 		ICEServers: []webrtc.ICEServer{
 			{
-				URLs: []string{"stun:stun.l.google.com:19302"},
+				// URLs: []string{"stun:stun.l.google.com:19302"},
+				URLs: []string{"stun:1.xten.com:3478"},
 			},
 		},
 	}

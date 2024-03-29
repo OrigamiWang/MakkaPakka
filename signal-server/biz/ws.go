@@ -9,6 +9,7 @@ import (
 // 信令服务器向SFU发起websocket连接
 
 func ConnectSFU() *websocket.Conn {
+	// url := "ws://192.168.1.126:8082/sfu"
 	url := "ws://127.0.0.1:8082/sfu"
 
 	dialer := websocket.Dialer{}
